@@ -29,7 +29,7 @@ var RelativeEmailForm = ReactMeteor.createClass({
   }
 });
 
-var RelativeEmailsComponent = ReactMeteor.createClass({
+RelativeEmailsComponent = ReactMeteor.createClass({
   getMeteorState: function () {
     return {
       emails: RelativeEmails.find().fetch()
@@ -58,13 +58,4 @@ var RelativeEmailsComponent = ReactMeteor.createClass({
       <RelativeEmailForm />
     </div>;
   }
-});
-
-Template.body.onRendered(function () {
-  var emails = [
-    "mom@google.com",
-    "dad@google.com"
-  ];
-
-  React.render(<RelativeEmailsComponent emails={emails}/>, this.find(".react-container"));
 });
