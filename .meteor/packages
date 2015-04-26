@@ -14,3 +14,4 @@ meteorhacks:npm
 
 npm-container
 percolate:synced-cron
+email
