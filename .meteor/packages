@@ -15,3 +15,5 @@ meteorhacks:npm
 npm-container
 percolate:synced-cron
 email
+reactjs:react
+twbs:bootstrap
