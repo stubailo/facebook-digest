@@ -9,7 +9,10 @@ Meteor.methods({
     var accessToken = Meteor.user().services.facebook.accessToken;
     var id = Meteor.user().services.facebook.id;
 
-    var photos = Meteor.wrapAsync(fbgraph.get)("/" + id + "/photos", {access_token: accessToken});
+    var now = moment();
+    var monthAgo = now.subtract({months: 1});
+
+    var photos = Meteor.wrapAsync(fbgraph.get)("/" + id + "/photos/?since=" + monthAgo.unix(), {access_token: accessToken});
 
     Meteor.users.update(Meteor.userId(), {$set: {
       "profile.photos": photos
