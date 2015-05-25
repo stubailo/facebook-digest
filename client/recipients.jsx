@@ -6,16 +6,16 @@ var RecipientForm = ReactMeteor.createClass({
 
     var form = event.target;
 
-    var address = form.address.value;
+    var email = form.email.value;
     var name = form.name.value;
 
     Recipients.insert({
       userId: Meteor.userId(),
-      address: address,
+      email: email,
       name: name
     });
 
-    form.address.value = "";
+    form.email.value = "";
     form.name.value = "";
   },
   render: function () {
@@ -23,7 +23,7 @@ var RecipientForm = ReactMeteor.createClass({
 
     return <form onSubmit={self.onSubmit}>
       <input type="text" name="name" placeholder="name" />
-      <input type="email" name="address" placeholder="email" />
+      <input type="email" name="email" placeholder="email" />
       <button>Save</button>
     </form>;
   }
@@ -35,23 +35,19 @@ RecipientsComponent = ReactMeteor.createClass({
       emails: Recipients.find().fetch()
     }
   },
-  removeEmail: function (email) {
-    Recipients.remove(email._id);
+  removeRecipient: function (recipient) {
+    Recipients.remove(recipient._id);
   },
   render: function () {
     var self = this;
 
     return <div>
-      <h3>{"Your relative's emails:"}</h3>
+      <h3>{"Recipients:"}</h3>
       <ul>{
-        self.state.emails.map(function (email) {
-          var removeThisEmail = function () {
-            self.removeEmail(email);
-          };
-
-          return <li key={email.address}>
-            {email.name} ({email.address})
-            <button onClick={removeThisEmail}>X</button>
+        self.state.emails.map(function (recipient) {
+          return <li key={recipient.email}>
+            {recipient.name} ({recipient.email})
+            <button onClick={self.removeRecipient.bind(self, recipient)}>X</button>
           </li>;
         })
       }</ul>

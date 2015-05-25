@@ -1,6 +1,26 @@
 var fbgraph = Meteor.npmRequire("fbgraph");
 
 Meteor.methods({
+  /**
+   * Return all Facebook photos this user was tagged in after a certain time
+   *
+   * Side effects: updates user.lastImportTime and letter.candidateSelectionTime
+   * to current time
+   * 
+   * @param  {Date} since Return all photos uploaded after this timestamp
+   * @return {Array} An array of photo objects as returned from the Facebook API
+   */
+  getFacebookPhotosSince: function (since) {
+    // todo
+  },
+
+  getFacebookPhotosUntil: function (until, limit) {
+    // limit should have a default
+  },
+
+  /**
+   * Internal method to get Facebook photos
+   */
   getRecentPhotos: function (numDays, limit, offset) {
     numDays = numDays || 30;  // default to photos from last 30 days
     limit = limit || 100;  // default to 100 photos max
