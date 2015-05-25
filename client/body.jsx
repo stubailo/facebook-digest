@@ -7,7 +7,7 @@ Template.body.onRendered(function () {
   ];
 
   React.render(<div>
-    <RelativeEmailsComponent emails={emails}/>
+    <RecipientsComponent emails={emails}/>
     <SelectableFacebookPhotosGrid />
   </div>, this.find(".react-container"));
 });

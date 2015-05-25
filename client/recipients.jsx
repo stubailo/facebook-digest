@@ -1,6 +1,6 @@
 // @jsx React.DOM
 
-var RelativeEmailForm = ReactMeteor.createClass({
+var RecipientForm = ReactMeteor.createClass({
   onSubmit: function (event) {
     event.preventDefault();
 
@@ -9,7 +9,7 @@ var RelativeEmailForm = ReactMeteor.createClass({
     var address = form.address.value;
     var name = form.name.value;
 
-    RelativeEmails.insert({
+    Recipients.insert({
       userId: Meteor.userId(),
       address: address,
       name: name
@@ -29,14 +29,14 @@ var RelativeEmailForm = ReactMeteor.createClass({
   }
 });
 
-RelativeEmailsComponent = ReactMeteor.createClass({
+RecipientsComponent = ReactMeteor.createClass({
   getMeteorState: function () {
     return {
-      emails: RelativeEmails.find().fetch()
+      emails: Recipients.find().fetch()
     }
   },
   removeEmail: function (email) {
-    RelativeEmails.remove(email._id);
+    Recipients.remove(email._id);
   },
   render: function () {
     var self = this;
@@ -55,7 +55,7 @@ RelativeEmailsComponent = ReactMeteor.createClass({
           </li>;
         })
       }</ul>
-      <RelativeEmailForm />
+      <RecipientForm />
     </div>;
   }
 });
