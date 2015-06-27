@@ -9,7 +9,8 @@ var RecipientForm = ReactMeteor.createClass({
     var email = form.email.value;
     var name = form.name.value;
 
-    Recipients.insert({
+    // TODO: Handle errors
+    Meteor.call("/recipients/insert", {
       userId: Meteor.userId(),
       email: email,
       name: name
@@ -32,11 +33,12 @@ var RecipientForm = ReactMeteor.createClass({
 RecipientsComponent = ReactMeteor.createClass({
   getMeteorState: function () {
     return {
-      emails: Recipients.find().fetch()
+      emails: Recipients.find({ userId: Meteor.userId() }).fetch()
     }
   },
   removeRecipient: function (recipient) {
-    Recipients.remove(recipient._id);
+    console.log(recipient);
+    Meteor.call("/recipients/remove", recipient._id);
   },
   render: function () {
     var self = this;
