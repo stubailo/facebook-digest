@@ -19,16 +19,39 @@ Meteor.methods({
   },
 
   getFacebookPhotosUntil: function (until, limit) {
-    // limit should have a default
+    limit = limit || 100;  // default to 100 photos max
+    until = moment(until) || moment();  // default to offset = 0
+
+    if (! Meteor.userId()) {
+      throw new Meteor.Error("must-be-logged-in");
+    }
+
+    var accessToken = Meteor.user().services.facebook.accessToken;
+    var id = Meteor.user().services.facebook.id;
+
+    var photosUrl = "/" + id + "/photos/" +
+      "?until=" + until.unix() +
+      "&limit=" + limit;
+
+    try {
+      var photos = Meteor.wrapAsync(fbgraph.get)(photosUrl, {access_token: accessToken});
+    }
+    catch(error) {
+      console.log(error);
+    }
+
+    Meteor.users.update(Meteor.userId(), {$set: {
+      "profile.photos": photos
+    }});
+
   },
 
   /**
    * Internal method to get Facebook photos
    */
-  _getRecentPhotos: function (numDays, limit, offset) {
+  _getRecentPhotos: function (numDays, limit) {
     numDays = numDays || 30;  // default to photos from last 30 days
     limit = limit || 100;  // default to 100 photos max
-    offset = offset || 0;  // default to offset = 0
 
     if (! Meteor.userId()) {
       throw new Meteor.Error("must-be-logged-in");
@@ -42,8 +65,7 @@ Meteor.methods({
 
     var photosUrl = "/" + id + "/photos/" +
       "?since=" + startTime.unix() +
-      "&limit=" + limit +
-      "&offset=" + offset;
+      "&limit=" + limit;
 
     try {
       var photos = Meteor.wrapAsync(fbgraph.get)(photosUrl, {access_token: accessToken});
