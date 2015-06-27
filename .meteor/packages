@@ -20,3 +20,4 @@ momentjs:moment
 less
 react
 react-template-helper
+cosmos:browserify

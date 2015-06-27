@@ -14,3 +14,5 @@ Template.reactBody.helpers({
     return App;
   }
 });
+
+injectTapEventPlugin();
