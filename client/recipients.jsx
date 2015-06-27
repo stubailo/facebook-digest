@@ -1,6 +1,6 @@
 // @jsx React.DOM
 
-var RecipientForm = ReactMeteor.createClass({
+var RecipientForm = React.createClass({
   onSubmit: function (event) {
     event.preventDefault();
 
@@ -30,14 +30,14 @@ var RecipientForm = ReactMeteor.createClass({
   }
 });
 
-RecipientsComponent = ReactMeteor.createClass({
-  getMeteorState: function () {
+RecipientsComponent = React.createClass({
+  mixins: [ReactMeteorData],
+  getMeteorData: function () {
     return {
       emails: Recipients.find({ userId: Meteor.userId() }).fetch()
     }
   },
   removeRecipient: function (recipient) {
-    console.log(recipient);
     Meteor.call("/recipients/remove", recipient._id);
   },
   render: function () {
@@ -46,7 +46,7 @@ RecipientsComponent = ReactMeteor.createClass({
     return <div>
       <h3>{"Recipients:"}</h3>
       <ul>{
-        self.state.emails.map(function (recipient) {
+        self.data.emails.map(function (recipient) {
           return <li key={recipient.email}>
             {recipient.name} ({recipient.email})
             <button onClick={self.removeRecipient.bind(self, recipient)}>X</button>

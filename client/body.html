@@ -1,7 +1,12 @@
 <body>
   <div class="container">
     {{> loginButtons}}
-
-    <div class="react-container"></div>
+    {{> reactBody}}
   </div>
 </body>
+
+<template name="reactBody">
+  <div class="react-container">
+    {{> React component=App}}
+  </div>
+</template>
