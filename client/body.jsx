@@ -1,13 +1,16 @@
 // @jsx React.DOM
 
-Template.body.onRendered(function () {
-  var emails = [
-    "mom@google.com",
-    "dad@google.com"
-  ];
+App = React.createClass({
+  render() {
+    return <div>
+      <RecipientsComponent />
+      <SelectableFacebookPhotosGrid />
+    </div>
+  }
+});
 
-  React.render(<div>
-    <RecipientsComponent emails={emails}/>
-    <SelectableFacebookPhotosGrid />
-  </div>, this.find(".react-container"));
+Template.reactBody.helpers({
+  App() {
+    return App;
+  }
 });
