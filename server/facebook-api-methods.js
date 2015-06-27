@@ -6,12 +6,16 @@ Meteor.methods({
    *
    * Side effects: updates user.lastImportTime and letter.candidateSelectionTime
    * to current time
-   * 
+   *
    * @param  {Date} since Return all photos uploaded after this timestamp
    * @return {Array} An array of photo objects as returned from the Facebook API
    */
   getFacebookPhotosSince: function (since) {
-    // todo
+    var since = moment(since);
+    var now = moment();
+    var numDays = now.diff(since, 'days');
+    Meteor.call("_getRecentPhotos", numDays);
+
   },
 
   getFacebookPhotosUntil: function (until, limit) {
@@ -21,7 +25,7 @@ Meteor.methods({
   /**
    * Internal method to get Facebook photos
    */
-  getRecentPhotos: function (numDays, limit, offset) {
+  _getRecentPhotos: function (numDays, limit, offset) {
     numDays = numDays || 30;  // default to photos from last 30 days
     limit = limit || 100;  // default to 100 photos max
     offset = offset || 0;  // default to offset = 0
@@ -41,7 +45,12 @@ Meteor.methods({
       "&limit=" + limit +
       "&offset=" + offset;
 
-    var photos = Meteor.wrapAsync(fbgraph.get)(photosUrl, {access_token: accessToken});
+    try {
+      var photos = Meteor.wrapAsync(fbgraph.get)(photosUrl, {access_token: accessToken});
+    }
+    catch(error) {
+      console.log(error);
+    }
 
     Meteor.users.update(Meteor.userId(), {$set: {
       "profile.photos": photos
