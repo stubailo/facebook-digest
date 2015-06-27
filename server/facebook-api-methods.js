@@ -10,72 +10,65 @@ Meteor.methods({
    * @param  {Date} since Return all photos uploaded after this timestamp
    * @return {Array} An array of photo objects as returned from the Facebook API
    */
-  getFacebookPhotosSince: function (since) {
-    var since = moment(since);
-    var now = moment();
-    var numDays = now.diff(since, 'days');
-    Meteor.call("_getRecentPhotos", numDays);
-
+  getFacebookPhotosSince: function (since, limit) {
+    since = moment(since);
+    limit = limit || 12;
+    var photosUrl = getFacebookPhotoUrl(limit, since.unix(), null);
+    var after = Meteor.call("_updateFacebookPhotos", photosUrl);
+    return getFacebookPhotoUrl(limit, null, after)
   },
 
-  getFacebookPhotosUntil: function (until, limit) {
-    limit = limit || 100;  // default to 100 photos max
-    until = moment(until) || moment();  // default to offset = 0
+  getFacebookPhotosNext: function(photosUrl, limit) {
+    limit = limit || 12;
+    after = Meteor.call("_appendFacebookPhotos", photosUrl);
+    return getFacebookPhotoUrl(limit, null, after)
+  },
 
+  _updateFacebookPhotos: function(photosUrl) {
     if (! Meteor.userId()) {
       throw new Meteor.Error("must-be-logged-in");
     }
-
-    var accessToken = Meteor.user().services.facebook.accessToken;
-    var id = Meteor.user().services.facebook.id;
-
-    var photosUrl = "/" + id + "/photos/" +
-      "?until=" + until.unix() +
-      "&limit=" + limit;
-
-    try {
-      var photos = Meteor.wrapAsync(fbgraph.get)(photosUrl, {access_token: accessToken});
-    }
-    catch(error) {
-      console.log(error);
-    }
-
+    var photos = Meteor.call("_getFacebookPhotos", photosUrl);
     Meteor.users.update(Meteor.userId(), {$set: {
-      "profile.photos": photos
+      "profile.photos": photos && photos.data
     }});
-
+    return photos.paging.cursors.after;
   },
 
-  /**
-   * Internal method to get Facebook photos
-   */
-  _getRecentPhotos: function (numDays, limit) {
-    numDays = numDays || 30;  // default to photos from last 30 days
-    limit = limit || 100;  // default to 100 photos max
 
+  _appendFacebookPhotos: function(photosUrl) {
     if (! Meteor.userId()) {
       throw new Meteor.Error("must-be-logged-in");
     }
+    var photos = Meteor.call("_getFacebookPhotos", photosUrl);
+    Meteor.users.update(Meteor.userId(), {$pushAll: {
+      "profile.photos": photos && photos.data
+    }});
+    return photos.paging.cursors.after;
+  },
 
+  _getFacebookPhotos: function(photosUrl) {
     var accessToken = Meteor.user().services.facebook.accessToken;
-    var id = Meteor.user().services.facebook.id;
-
-    var now = moment();
-    var startTime = now.subtract({days: numDays});
-
-    var photosUrl = "/" + id + "/photos/" +
-      "?since=" + startTime.unix() +
-      "&limit=" + limit;
-
     try {
-      var photos = Meteor.wrapAsync(fbgraph.get)(photosUrl, {access_token: accessToken});
-    }
-    catch(error) {
+      return Meteor.wrapAsync(fbgraph.get)(photosUrl, {access_token: accessToken});
+    } catch(error) {
       console.log(error);
     }
-
-    Meteor.users.update(Meteor.userId(), {$set: {
-      "profile.photos": photos
-    }});
   }
+
 });
+
+function getFacebookPhotoUrl(limit, since, after) {
+  var id = Meteor.user().services.facebook.id;
+  var url = "/" + id + "/photos/?limit=" + limit;
+
+  if (since) {
+    url += "&since=" +  since
+  }
+
+  if (after) {
+    url += "&after=" +  after
+  }
+
+  return url;
+}

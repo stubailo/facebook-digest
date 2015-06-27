@@ -34,17 +34,22 @@ SelectableFacebookPhotosGrid = React.createClass({
     return {
       // Object of photo id to true
       selected: {},
-      photos: [],
-      numPhotosToDisplay: 12
-    };
+      photos: []
+      };
   },
+
+  componentDidMount() {
+    // TODO(angela): change this to the time of the last letter
+    Meteor.call("getFacebookPhotosSince", new Date(2015, 4, 1), this.photosPerPage, (error, result) => {
+      if (!error) {
+        this.nextUrl = result;
+      }
+    });
+  },
+
   getMeteorData() {
     var user = Meteor.user();
-    var photos = user && user.profile && user.profile.photos.data;
-
-    if (photos && photos.length) {
-      photos = _.first(photos, this.state.numPhotosToDisplay);
-    }
+    var photos = user && user.profile && user.profile.photos;
 
     return {
       photos: photos
@@ -65,8 +70,11 @@ SelectableFacebookPhotosGrid = React.createClass({
     });
   },
   showMore() {
-    this.setState({
-      numPhotosToDisplay: this.state.numPhotosToDisplay + this.photosPerPage
+    Meteor.call('getFacebookPhotosNext', this.nextUrl, this.photosPerPage, (error, result) => {
+      if (!error) {
+        var nextUrl = result;
+        this.nextUrl = nextUrl;
+      }
     });
   },
   render() {
