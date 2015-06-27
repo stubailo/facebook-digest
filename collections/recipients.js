@@ -29,14 +29,27 @@ Recipients.setEmailInactive = function (recipientId) {
 
 }
 
-Recipients.insert = function (newRecipient) {
-
-}
-
-Recipients.remove = function (recipientId) {
-
-}
-
 Recipients.update = function (recipientId, fieldsToUpdate) {
 
 }
+
+Meteor.methods({
+  "/recipients/insert": function (newRecipient) {
+    // Make sure we set owner correctly
+    newRecipient.userId = this.userId;
+
+    _.defaults(newRecipient, { emailStatus: Recipients.STATUS.ACTIVE });
+
+    check(newRecipient, Recipients.schema);
+
+    Recipients.insert(newRecipient);
+  },
+  "/recipients/remove": function (recipientId) {
+    console.log("called remove!");
+    // Only remove if the current user owns it
+    Recipients.remove({
+      _id: recipientId,
+      userId: this.userId
+    });
+  }
+})
