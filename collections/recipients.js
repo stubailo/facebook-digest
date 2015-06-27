@@ -21,18 +21,6 @@ Recipients.schema = {
   emailStatus: Number
 }
 
-Recipients.setEmailActive = function (recipientId) {
-
-}
-
-Recipients.setEmailInactive = function (recipientId) {
-
-}
-
-Recipients.update = function (recipientId, fieldsToUpdate) {
-
-}
-
 Meteor.methods({
   "/recipients/insert": function (newRecipient) {
     // Make sure we set owner correctly
@@ -45,11 +33,41 @@ Meteor.methods({
     Recipients.insert(newRecipient);
   },
   "/recipients/remove": function (recipientId) {
-    console.log("called remove!");
     // Only remove if the current user owns it
     Recipients.remove({
       _id: recipientId,
       userId: this.userId
     });
+  },
+  "/recipients/update": function (recipientId, fieldsToUpdate) {
+    throw new Error("not implemented");
+  },
+  "/recipients/setActive": function (recipientId) {
+    var updated = Recipients.update({
+      _id: recipientId,
+      userId: this.userId
+    }, {
+      $set: {
+        emailStatus: Recipients.STATUS.ACTIVE
+      }
+    });
+
+    if (! updated) {
+      throw new Meteor.Error("permission-denied");
+    }
+  },
+  "/recipients/setInactive": function (recipientId) {
+    var updated = Recipients.update({
+      _id: recipientId,
+      userId: this.userId
+    }, {
+      $set: {
+        emailStatus: Recipients.STATUS.INACTIVE
+      }
+    });
+
+    if (! updated) {
+      throw new Meteor.Error("permission-denied");
+    }
   }
 })
