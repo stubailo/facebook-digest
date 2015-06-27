@@ -80,6 +80,7 @@ SelectableFacebookPhotosGrid = React.createClass({
       <ul className="photo-grid">{
         self.data.photos && self.data.photos.map(function (photo) {
           return <SelectablePhotoSquare
+            key={photo.id}
             photo={photo}
             onSelectToggle={ self.toggleSelectPhoto.bind(self, photo) }
             selected={self.state.selected[photo.id]}/>;
