@@ -6,12 +6,12 @@ MessageEditor = React.createClass({
   contextTypes: {
     muiTheme: React.PropTypes.object
   },
-  subjectChanged() {
+  subjectChanged: _.debounce(function () {
     Meteor.call("/letters/updateSubject", this.props.letter._id, this.refs.subject.getValue());
-  },
-  messageChanged() {
+  }, 300),
+  messageChanged: _.debounce(function () {
     Meteor.call("/letters/updateMessage", this.props.letter._id, this.refs.message.getValue());
-  },
+  }, 300),
   render: function () {
     return <div style={{
         padding: this.context.muiTheme.spacing.desktopGutterLess
