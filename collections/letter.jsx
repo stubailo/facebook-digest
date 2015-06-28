@@ -30,7 +30,10 @@ Letters.schema = {
   sentTime: Match.Optional(Date),
 
   //
-  recipients: [String]
+  recipients: [String],
+
+  // Message that the user entered
+  message: String
 };
 
 
@@ -114,11 +117,19 @@ Meteor.methods({
   },
 
   "/letters/addPhoto": function(letterId, photoId) {
-
+    Letters.update(letterId, {
+      $addToSet: {
+        photos: photoId
+      }
+    });
   },
 
   "/letters/removePhoto": function(letterId, photoId) {
-
+    Letters.update(letterId, {
+      $pull: {
+        photos: photoId
+      }
+    });
   },
 
   "/letters/updateText": function(letterId, newText) {
@@ -128,5 +139,13 @@ Meteor.methods({
   "/letters/getUnsentLetter": function() {
     var unsentLetter = Letters.findOne({userId: Meteor.userId(), status: Letters.STATUS.NOT_SENT});
     return unsentLetter;
+  },
+
+  "/letters/updateMessage": function(letterId, newText) {
+    Letters.update(letterId, {
+      $set: {
+        message: newText
+      }
+    });
   }
 });
