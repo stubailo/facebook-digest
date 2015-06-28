@@ -32,6 +32,9 @@ Letters.schema = {
   //
   recipients: [String],
 
+  // Subject that the user entered
+  subject: String,
+
   // Message that the user entered
   message: String
 };
@@ -72,10 +75,12 @@ Meteor.methods({
       status: Letters.STATUS.NOT_SENT,
       photos: photos,
       html: "",
-      recipients: []
+      recipients: [],
+      message: "",
+      subject: ""
     }
     check(letter, Letters.schema);
-    Letters.insert(letter);
+    return Letters.insert(letter);
   },
 
   /**
@@ -127,6 +132,14 @@ Meteor.methods({
     Letters.update(letterId, {
       $pull: {
         photos: photoId
+      }
+    });
+  },
+
+  "/letters/updateSubject": function(letterId, newText) {
+    Letters.update(letterId, {
+      $set: {
+        subject: newText
       }
     });
   },

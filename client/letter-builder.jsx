@@ -11,7 +11,7 @@ var {
   State
 } = ReactRouter;
 
-LetterBuilder = React.createClass({
+var LetterBuilder = React.createClass({
   mixins: [Navigation, State],
   goToTab(tab) {
     this.transitionTo(tab.props.route);
@@ -52,8 +52,37 @@ LetterBuilder = React.createClass({
               key={props.route}
               {...props} /> )}
         </Tabs>
-        <RouteHandler />
+        <RouteHandler letter={this.props.letter} />
       </Paper>
     </div>
+  }
+});
+
+LetterPage = React.createClass({
+  mixins: [ReactMeteorData],
+  componentWillMount() {
+    var unsentLetter = Letters.findOne({
+      userId: Meteor.userId(),
+      status: Letters.STATUS.NOT_SENT
+    });
+
+    if (! unsentLetter) {
+      Meteor.call("/letters/create");
+    }
+  },
+  getMeteorData() {
+    return {
+      letter: Letters.findOne({
+        userId: Meteor.userId(),
+        status: Letters.STATUS.NOT_SENT
+      })
+    };
+  },
+  render() {
+    if (this.data.letter) {
+      return <LetterBuilder letter={this.data.letter}/>;
+    } else {
+      return <div>Creating letter...</div>
+    }
   }
 });
