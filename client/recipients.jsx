@@ -50,8 +50,6 @@ RecipientsComponent = React.createClass({
     var self = this;
 
     return <div>
-      <h3>{"Recipients:"}</h3>
-      <RaisedButton label="Continue" primary={true} />
       <List>
         {self.data.emails.map(function (recipient) {
           return <ListItem key={recipient.email} disableTouchTap={true}>
