@@ -32,6 +32,9 @@ Letters.schema = {
   //
   recipients: [String],
 
+  // Subject that the user entered
+  subject: String,
+
   // Message that the user entered
   message: String
 };
@@ -73,10 +76,12 @@ Meteor.methods({
       status: Letters.STATUS.NOT_SENT,
       photos: photos,
       html: "",
-      recipients: []
+      recipients: [],
+      message: "",
+      subject: ""
     }
     check(letter, Letters.schema);
-    Letters.insert(letter);
+    return Letters.insert(letter);
   },
 
   /**
@@ -132,13 +137,17 @@ Meteor.methods({
     });
   },
 
-  "/letters/updateText": function(letterId, newText) {
-
-  },
-
   "/letters/getUnsentLetter": function() {
     var unsentLetter = Letters.findOne({userId: Meteor.userId(), status: Letters.STATUS.NOT_SENT});
     return unsentLetter;
+  },
+
+  "/letters/updateSubject": function(letterId, newText) {
+    Letters.update(letterId, {
+      $set: {
+        subject: newText
+      }
+    });
   },
 
   "/letters/updateMessage": function(letterId, newText) {
