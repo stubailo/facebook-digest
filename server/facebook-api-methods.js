@@ -13,15 +13,15 @@ Meteor.methods({
   getFacebookPhotosSince: function (since, limit) {
     since = moment(since);
     limit = limit || 12;
-    var photosUrl = getFacebookPhotoUrl(limit, since.unix(), null);
+    var photosUrl = makeFacebookPhotosUrl(limit, since.unix(), null);
     var after = Meteor.call("_updateFacebookPhotos", photosUrl);
-    return getFacebookPhotoUrl(limit, null, after)
+    return makeFacebookPhotosUrl(limit, null, after)
   },
 
   getFacebookPhotosNext: function(photosUrl, limit) {
     limit = limit || 12;
     after = Meteor.call("_appendFacebookPhotos", photosUrl);
-    return getFacebookPhotoUrl(limit, null, after)
+    return makeFacebookPhotosUrl(limit, null, after)
   },
 
   _updateFacebookPhotos: function(photosUrl) {
@@ -55,10 +55,9 @@ Meteor.methods({
       console.log(error);
     }
   }
-
 });
 
-function getFacebookPhotoUrl(limit, since, after) {
+function makeFacebookPhotosUrl(limit, since, after) {
   var id = Meteor.user().services.facebook.id;
   var url = "/" + id + "/photos/?limit=" + limit;
 
@@ -71,4 +70,13 @@ function getFacebookPhotoUrl(limit, since, after) {
   }
 
   return url;
+}
+
+getFacebookPhotoUrl = function (imageId) {
+  var accessToken = Meteor.user().services.facebook.accessToken;
+  try {
+    return Meteor.wrapAsync(fbgraph.get)("/" + imageId, {access_token: accessToken}).images[0].source;
+  } catch(error) {
+    console.log(error);
+  }
 }

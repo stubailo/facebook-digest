@@ -107,17 +107,17 @@ Meteor.methods({
       Meteor.call("/letter/sendLetter", letterId, recipient);
     });
 
-    var updated = Letters.update({
-      _id: letterId
-    }, {
-      $set: {
-        status: Letters.STATUS.SENT
-      }
-    });
+    // var updated = Letters.update({
+    //   _id: letterId
+    // }, {
+    //   $set: {
+    //     status: Letters.STATUS.SENT
+    //   }
+    // });
 
-    if (! updated) {
-      throw new Meteor.Error("Letter not found.");
-    }
+    // if (! updated) {
+    //   throw new Meteor.Error("Letter not found.");
+    // }
 
   },
 

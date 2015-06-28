@@ -1,3 +1,5 @@
+var request = Meteor.npmRequire("request");
+
 Meteor.methods({
     /**
      * Send a letter to user's recipients.
@@ -15,15 +17,25 @@ Meteor.methods({
         var toEmail = recipient.email;
         var fromEmail = Meteor.user().services.facebook.email;
         var subject = letter.subject || 'subject!!!';
-        var html = letter.html || '<b>empty</b> email!';
+        var text = letter.message || '<b>empty</b> email!';
 
-        check([toEmail, fromEmail, subject, html], [String]);
+        var imageIds = letter.photos;
+        var imageUrls = imageIds.map(getFacebookPhotoUrl);
+        var imageStreams = imageUrls.map(request);
+        var attachments = imageStreams.map(stream => {
+          return {
+            streamSource: stream
+          }
+        });
+
+        check([toEmail, fromEmail, subject, text], [String]);
 
         Email.send({
             to: toEmail,
             from: fromEmail,
             subject: subject,
-            html: html
+            text: text,
+            attachments: attachments
         });
     }
 });
