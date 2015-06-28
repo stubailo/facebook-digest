@@ -1,7 +1,8 @@
 var ThemeManager = new mui.Styles.ThemeManager();
 
 var {
-  RouteHandler
+  RouteHandler,
+  Link
 } = ReactRouter;
 
 App = React.createClass({
@@ -16,7 +17,10 @@ App = React.createClass({
   },
 
   render() {
-    return <RouteHandler />;
+    return <div>
+      <Link to="home">Go home</Link>
+      <RouteHandler />
+    </div>;
   }
 });
 

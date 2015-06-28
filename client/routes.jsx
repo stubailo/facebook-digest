@@ -9,7 +9,7 @@ var routes = (
   <Route handler={App} path="/">
     <DefaultRoute handler={Home} name="home" />
     <Route handler={LetterBuilder} name="letter-builder">
-      <Route handler={RecipientsComponent} name="recipients" />
+      <DefaultRoute handler={RecipientsComponent} name="recipients" />
       <Route handler={SelectableFacebookPhotosGrid} name="photos" />
       <Route handler={MessageEditor} name="message" />
     </Route>
