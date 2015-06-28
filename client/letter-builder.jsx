@@ -1,7 +1,8 @@
 var {
   Tabs,
   Tab,
-  Paper
+  Paper,
+  RaisedButton
 } = mui;
 
 var {
@@ -33,8 +34,17 @@ LetterBuilder = React.createClass({
     return tabIndex;
   },
   render() {
-    return <div>
-      <h1>Creating a letter</h1>
+    return <div className="container-fluid">
+      <div className="row">
+        <div className="col-md-8">
+          <h1>Creating a letter</h1>
+        </div>
+        <div className="col-md-4">
+          <span className="pull-right">
+            <RaisedButton primary={true} label="Review & send" />
+          </span>
+        </div>
+      </div>
       <Paper zDepth={1}>
         <Tabs initialSelectedIndex={this.getTabIndexFromRoute()}>
           { this.tabData.map(props => <Tab
