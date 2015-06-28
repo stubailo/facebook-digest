@@ -5,7 +5,7 @@ Meteor.methods({
     "/reminder-emails/sendAll": function () {
         // Let other method calls from the same client start running,
         // without waiting for the email sending to complete.
-        self.unblock();
+        this.unblock();
         ReminderEmails.sendAll();
     }
 });
@@ -36,7 +36,7 @@ ReminderEmails.sendAll = function () {
  * Side effects:
  * Updates user.lastImportedTime to the current time
  * Sends email
- * 
+ *
  * @param  {String} userId The ID of the user
  * @return {[type]}        [description]
  */

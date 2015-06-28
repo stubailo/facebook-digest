@@ -53,7 +53,8 @@ Meteor.methods({
       throw new Meteor.Error("must-be-logged-in");
     }
 
-    if (getUnsentLetterByUser(Meteor.userId())) {
+    var unsentLetter = Meteor.call("/letters/getUnsentLetter");
+    if (unsentLetter) {
       throw new Error("You can only have 1 unsent letter at a time.")
     }
 
@@ -88,14 +89,14 @@ Meteor.methods({
     if (letterId) {
       unsentLetter = Letters.findOne(letterId);
     } else {
-      unsentLetter = getUnsentLetterByUser(Meteor.userId());
+      unsentLetter = Meteor.call("/letters/getUnsentLetter");
       letterId = unsentLetter._id;
     }
 
     var recipients = Meteor.call("/recipients/ofUser", Meteor.userId());
 
     recipients.forEach(recipient => {
-      // TODO(angela): send letter
+      Meteor.call("/letter/sendLetter", letterId, recipient);
     });
 
     var updated = Letters.update({
@@ -122,11 +123,10 @@ Meteor.methods({
 
   "/letters/updateText": function(letterId, newText) {
 
+  },
+
+  "/letters/getUnsentLetter": function() {
+    var unsentLetter = Letters.findOne({userId: Meteor.userId(), status: Letters.STATUS.NOT_SENT});
+    return unsentLetter;
   }
 });
-
-
-function getUnsentLetterByUser(userId) {
-  var unsentLetter = Letters.findOne({userId: userId, status: Letters.STATUS.NOT_SENT});
-  return unsentLetter;
-}
