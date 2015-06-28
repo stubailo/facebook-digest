@@ -18,17 +18,17 @@ MessageEditor = React.createClass({
           }} >
       <TextField
         fullWidth={true}
-        hintText="Subject"
         ref="subject"
         onChange={this.subjectChanged}
-        defaultValue={this.props.letter.subject} />
+        defaultValue={this.props.letter.subject}
+        floatingLabelText="Subject" />
       <TextField
         multiLine={true}
         fullWidth={true}
-        hintText="Message"
         ref="message"
         onChange={this.messageChanged}
-        defaultValue={this.props.letter.message} />
+        defaultValue={this.props.letter.message}
+        floatingLabelText="Message" />
     </div>
   }
 });
