@@ -21,10 +21,13 @@ Meteor.methods({
 
         var imageIds = letter.photos;
         var imageUrls = imageIds.map(getFacebookPhotoUrl);
-        var imageStreams = imageUrls.map(request);
+        var imageStreams = imageUrls.map(function(imageUrl) {
+            return request(imageUrl);
+        });
         var attachments = imageStreams.map(stream => {
           return {
-            streamSource: stream
+            streamSource: stream,
+            contentType: 'image/jpeg'
           }
         });
 
