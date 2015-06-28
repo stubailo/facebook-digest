@@ -54,12 +54,12 @@ RecipientsComponent = React.createClass({
       <RaisedButton label="Continue" primary={true} />
       <List>
         {self.data.emails.map(function (recipient) {
-          return <ListItem key={recipient.email}>
+          return <ListItem key={recipient.email} disableTouchTap={true}>
             {recipient.name} ({recipient.email})
             <button onClick={self.removeRecipient.bind(self, recipient)}>X</button>
           </ListItem>;
         })}
-        <ListItem>
+        <ListItem disableTouchTap={true}>
           <RecipientForm />
         </ListItem>
       </List>
