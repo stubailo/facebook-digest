@@ -30,13 +30,6 @@ SelectableFacebookPhotosGrid = React.createClass({
   // This many more are displayed when you
   // click "show more"
   photosPerPage: 12,
-  getInitialState() {
-    return {
-      // Object of photo id to true
-      selected: {},
-      photos: []
-      };
-  },
 
   componentDidMount() {
     // TODO(angela): change this to the time of the last letter
@@ -56,18 +49,13 @@ SelectableFacebookPhotosGrid = React.createClass({
     };
   },
   toggleSelectPhoto(photo) {
-    var alreadySelected = this.state.selected[photo.id];
-    var selectedPhotos = _.clone(this.state.selected);
+    var alreadySelected = this.photoIsSelected(photo.id);
 
     if (alreadySelected) {
-      delete selectedPhotos[photo.id];
+      Meteor.call("/letters/removePhoto", this.props.letter._id, photo.id);
     } else {
-      selectedPhotos[photo.id] = true;
+      Meteor.call("/letters/addPhoto", this.props.letter._id, photo.id);
     }
-
-    this.setState({
-      selected: selectedPhotos
-    });
   },
   showMore() {
     Meteor.call('getFacebookPhotosNext', this.nextUrl, this.photosPerPage, (error, result) => {
@@ -77,10 +65,13 @@ SelectableFacebookPhotosGrid = React.createClass({
       }
     });
   },
+  photoIsSelected(photoId) {
+    return _.include(this.props.letter.photos, photoId);
+  },
   render() {
     var self = this;
 
-    var numSelected = _.size(self.state.selected);
+    var numSelected = self.props.letter.photos.length;
 
     return <div>
       <h3>Select Photos ({numSelected} selected)</h3>
@@ -91,7 +82,7 @@ SelectableFacebookPhotosGrid = React.createClass({
             key={photo.id}
             photo={photo}
             onSelectToggle={ self.toggleSelectPhoto.bind(self, photo) }
-            selected={self.state.selected[photo.id]}/>;
+            selected={self.photoIsSelected(photo.id)}/>;
         })
       }</ul>
 
