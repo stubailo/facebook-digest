@@ -1,12 +1,8 @@
-// @jsx React.DOM
+var ThemeManager = new mui.Styles.ThemeManager();
 
 var {
-  Tabs,
-  Tab,
-  Paper
-} = mui;
-
-var ThemeManager = new mui.Styles.ThemeManager();
+  RouteHandler
+} = ReactRouter;
 
 App = React.createClass({
   childContextTypes: {
@@ -20,20 +16,7 @@ App = React.createClass({
   },
 
   render() {
-    return <div>
-    <h1>Creating a letter</h1>
-      <Paper zDepth={1}><Tabs>
-        <Tab label="1. Recipients">
-          <RecipientsComponent />
-        </Tab>
-        <Tab label="2. Photos">
-          <SelectableFacebookPhotosGrid />
-        </Tab>
-        <Tab label="3. Message">
-          Hello
-        </Tab>
-      </Tabs></Paper>
-    </div>
+    return <RouteHandler />;
   }
 });
 
