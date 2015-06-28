@@ -22,6 +22,10 @@ Recipients.schema = {
 }
 
 Meteor.methods({
+  "/recipients/ofUser": function(userId) {
+    return Recipients.find({userId: userId}).fetch();
+  },
+
   "/recipients/insert": function (newRecipient) {
     // Make sure we set owner correctly
     newRecipient.userId = this.userId;
