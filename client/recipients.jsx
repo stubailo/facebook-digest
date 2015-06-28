@@ -1,5 +1,11 @@
 // @jsx React.DOM
 
+var {
+  List,
+  ListItem,
+  RaisedButton
+} = mui;
+
 var RecipientForm = React.createClass({
   onSubmit: function (event) {
     event.preventDefault();
@@ -45,15 +51,18 @@ RecipientsComponent = React.createClass({
 
     return <div>
       <h3>{"Recipients:"}</h3>
-      <ul>{
-        self.data.emails.map(function (recipient) {
-          return <li key={recipient.email}>
+      <RaisedButton label="Continue" primary={true} />
+      <List>
+        {self.data.emails.map(function (recipient) {
+          return <ListItem key={recipient.email}>
             {recipient.name} ({recipient.email})
             <button onClick={self.removeRecipient.bind(self, recipient)}>X</button>
-          </li>;
-        })
-      }</ul>
-      <RecipientForm />
+          </ListItem>;
+        })}
+        <ListItem>
+          <RecipientForm />
+        </ListItem>
+      </List>
     </div>;
   }
 });
