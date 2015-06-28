@@ -30,7 +30,10 @@ Letters.schema = {
   sentTime: Match.Optional(Date),
 
   //
-  recipients: [String]
+  recipients: [String],
+
+  // Message that the user entered
+  message: String
 };
 
 
@@ -113,15 +116,27 @@ Meteor.methods({
   },
 
   "/letters/addPhoto": function(letterId, photoId) {
-
+    Letters.update(letterId, {
+      $addToSet: {
+        photos: photoId
+      }
+    });
   },
 
   "/letters/removePhoto": function(letterId, photoId) {
-
+    Letters.update(letterId, {
+      $pull: {
+        photos: photoId
+      }
+    });
   },
 
-  "/letters/updateText": function(letterId, newText) {
-
+  "/letters/updateMessage": function(letterId, newText) {
+    Letters.update(letterId, {
+      $set: {
+        message: newText
+      }
+    });
   }
 });
 
