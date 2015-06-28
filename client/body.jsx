@@ -2,7 +2,8 @@
 
 var {
   Tabs,
-  Tab
+  Tab,
+  Paper
 } = mui;
 
 var ThemeManager = new mui.Styles.ThemeManager();
@@ -19,17 +20,20 @@ App = React.createClass({
   },
 
   render() {
-    return <Tabs>
-      <Tab label="Recipients">
-        <RecipientsComponent />
-      </Tab>
-      <Tab label="Photos">
-        <SelectableFacebookPhotosGrid />
-      </Tab>
-      <Tab label="Message">
-        Hello
-      </Tab>
-    </Tabs>
+    return <div>
+    <h1>Creating a letter</h1>
+      <Paper zDepth={1}><Tabs>
+        <Tab label="1. Recipients">
+          <RecipientsComponent />
+        </Tab>
+        <Tab label="2. Photos">
+          <SelectableFacebookPhotosGrid />
+        </Tab>
+        <Tab label="3. Message">
+          Hello
+        </Tab>
+      </Tabs></Paper>
+    </div>
   }
 });
 
